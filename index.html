@@ -2,10 +2,9 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<link rel="stylesheet" href="mobile.css">
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CZ Durak client_42</title>
+<title>CZ Durak client_47</title>
 <style>
   :root{
     --table:#5c341d; --table-dark:#26150c; --panel:rgba(72,42,24,.42); --text:#f6f6f6;
@@ -127,7 +126,7 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>CZ Durak client_42</h1>
+  <h1>CZ Durak client_47</h1>
 
   <div class="topbar">
     <button class="btn-log" id="logToggleBtn" type="button" style="display:none">ЛОГ OFF</button>
@@ -206,7 +205,7 @@
           <option value="custom">Custom</option>
         </select>
         <input id="signalUrl" type="text" value="wss://bubbly-tranquility-production.up.railway.app" placeholder="wss://...">
-        <input id="signalRoom" type="text" value="42" placeholder="Комната">
+        <input id="signalRoom" type="text" value="47" placeholder="Комната">
         <button class="btn-log" id="signalClientBtn" type="button">Сервер: client</button>
       </div>
 
@@ -258,11 +257,11 @@
 <div class="history-box" id="historyPanel">
   <h4>История счёта</h4>
   <div class="lines" id="historyLines"></div>
-  <div class="actions"><button id="closeHistoryBtn" type="button" onclick="hideHistoryPanel()">Закрыть</button></div>
+  <div class="actions"><button id="closeHistoryBtn" type="button" >Закрыть</button></div>
 </div>
 
 <script>
-const APP_VERSION = 'CZ Durak client_42';
+const APP_VERSION = 'CZ Durak client_47';
 const suits = [
   { key: 'clubs', symbol: '♣', color: 'black', label: 'Трефы' },
   { key: 'diamonds', symbol: '♦', color: 'red', label: 'Бубны' },
@@ -278,6 +277,23 @@ const state = {
   logEnabled: false, debugEnabled: false, dragIndex: null,
   signaling: { ws: null, url: 'ws://localhost:8787', room: '', connected: false },
   connectionReady: false, pc: null, dc: null, rules: { gameVariant: '101' },
+  signalConnecting: false,
+  answerSent: false,
+  lastRemoteOfferSdp: '',
+  connection: {
+    attemptId: 0,
+    offerId: '',
+    stage: 'idle',
+    wsState: 'closed',
+    peerState: 'idle',
+    dcState: 'closed',
+    helloSent: false,
+    helloReceived: false,
+    startedAt: 0,
+    helloDeadlineAt: 0,
+    lastError: '',
+    helloTimer: null
+  },
   classicLog: '',
   lastRejectInfo: '',
   bgFiles: [],
@@ -289,6 +305,44 @@ const $ = (id) => document.getElementById(id);
 const NL = String.fromCharCode(10);
 const SERVER_PRESETS = { railway: 'wss://bubbly-tranquility-production.up.railway.app', localhost: 'ws://localhost:8787' };
 const ACTION_DELAY_MS = 900;
+const VERSION_NUM = ((APP_VERSION.match(/(\d+)/g) || []).pop()) || '0';
+
+function clearHelloTimer(){
+  if (state.connection && state.connection.helloTimer){
+    clearTimeout(state.connection.helloTimer);
+    state.connection.helloTimer = null;
+  }
+}
+function beginConnectAttempt(stage='direct'){
+  clearHelloTimer();
+  state.connection.attemptId += 1;
+  state.connection.offerId = '';
+  state.connection.stage = stage;
+  state.connection.wsState = 'closed';
+  state.connection.peerState = 'idle';
+  state.connection.dcState = 'closed';
+  state.connection.helloSent = false;
+  state.connection.helloReceived = false;
+  state.connection.startedAt = Date.now();
+  state.connection.helloDeadlineAt = 0;
+  state.connection.lastError = '';
+  return state.connection.attemptId;
+}
+function startHelloTimer(attemptId, ms=12000){
+  clearHelloTimer();
+  state.connection.helloDeadlineAt = Date.now() + ms;
+  state.connection.helloTimer = setTimeout(() => {
+    if (state.connection.attemptId !== attemptId) return;
+    if (state.connection.helloReceived || state.connectionReady) return;
+    state.connection.lastError = 'hello timeout';
+    logNet(`[flow] hello timeout after ${ms} ms`);
+  }, ms);
+}
+function logConn(eventName, details=''){
+  const elapsed = state.connection && state.connection.startedAt ? (Date.now() - state.connection.startedAt) : 0;
+  const suffix = details ? ` | ${details}` : '';
+  logNet(`[conn] ${eventName} | attempt=${state.connection.attemptId} | stage=${state.connection.stage} | ws=${state.connection.wsState} | peer=${state.connection.peerState} | dc=${state.connection.dcState} | t=${elapsed}ms${suffix}`);
+}
 
 const BG_FILE_RE = /\.(jpe?g|png|webp)$/i;
 const DEFAULT_BUTTON_BG_CANDIDATES = (() => {
@@ -404,7 +458,7 @@ const RULES_TEXT = `В Чешского дурака играют два игр�
 Даму любой масти можно выкладывать на любую карту, при этом игрок, выложивший Даму, заказывает масть, с которой должен зайти соперник (появляется окно с выбором масти).
 
 Подсчёт очков
-Когда у кого-то из игроков заканчиваются карты, у соперника увеличивается счёт на сумму очков в картах на руках:
+Когда у кого-то из игроков заканчиваются карты, значит соперник проиграл раунд и его карты пересчитываются:
 · Валет – 2 очка
 · Дама – 3 очка
 · Король – 4 очка
@@ -427,8 +481,13 @@ function showRoundEnd(title, lines){
 }
 function hideRoundEnd(){ $('roundEndPanel').classList.remove('show'); }
 
+function netTime(){
+  const d = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
 function logNet(msg){
-  $('netLog').textContent += msg + '\n';
+  $('netLog').textContent += `${netTime()}  ${msg}\n`;
   $('netLog').scrollTop = $('netLog').scrollHeight;
 }
 function setConnText(){ $('connStateText').textContent = state.connectionReady ? 'Connected' : 'No connection'; }
@@ -694,7 +753,22 @@ function applyRemoteState(payload){
   render();
 }
 function buildPeer(){
-  state.pc = new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+  state.pc = new RTCPeerConnection({
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      {
+        urls: [
+          'turn:global.relay.metered.ca:80',
+          'turn:global.relay.metered.ca:80?transport=tcp',
+          'turn:global.relay.metered.ca:443',
+          'turns:global.relay.metered.ca:443?transport=tcp'
+        ],
+        username: '680eb6076718e5a0bfa7fbc1',
+        credential: '/oAmKdtqPst8Vc2r'
+      }
+    ]
+  });
+
   state.pc.ondatachannel = (ev) => {
     state.dc = ev.channel;
     state.dc.onopen = () => { state.connectionReady = true; setConnText(); logNet('[open] DataChannel открыт'); sendMessage({type:'hello'}); };
@@ -707,16 +781,45 @@ function sendMessage(obj){
   state.dc.send(JSON.stringify(obj)); logNet('[send] ' + obj.type); return true;
 }
 
+
 function syncSignalStatus(){
   const btn = $('signalClientBtn');
   if (!btn) return;
   btn.textContent = state.signaling.connected ? 'Сервер: client ✓' : 'Сервер: client';
+  btn.disabled = !!state.signalConnecting || !!state.answerSent;
 }
 function closeSignalSocket(){
   try { if (state.signaling.ws) state.signaling.ws.close(); } catch(e){}
   state.signaling.ws = null;
   state.signaling.connected = false;
+  state.signalConnecting = false;
+  state.connection.wsState = 'closed';
   syncSignalStatus();
+}
+function closePeer(){
+  clearHelloTimer();
+  try {
+    if (state.dc){
+      state.dc.close();
+      state.dc = null;
+    }
+  } catch(e){}
+  try {
+    if (state.pc){
+      state.pc.close();
+      state.pc = null;
+    }
+  } catch(e){}
+  state.connectionReady = false;
+  state.awaitingState = false;
+  state.answerSent = false;
+  state.lastRemoteOfferSdp = '';
+  state.connection.offerId = '';
+  state.connection.peerState = 'idle';
+  state.connection.dcState = 'closed';
+  state.connection.helloSent = false;
+  state.connection.helloReceived = false;
+  setConnText();
 }
 function waitIceComplete(pc){
   return new Promise(resolve => {
@@ -730,7 +833,56 @@ function waitIceComplete(pc){
     pc.addEventListener('icegatheringstatechange', check);
   });
 }
+function buildPeer(){
+  closePeer();
+
+  state.connection.peerState = 'building';
+  state.connection.dcState = 'closed';
+  state.pc = new RTCPeerConnection({
+    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+  });
+
+  state.pc.onsignalingstatechange = () => logConn('signaling_state', state.pc ? state.pc.signalingState : '');
+  state.pc.onicegatheringstatechange = () => logConn('ice_gathering', state.pc ? state.pc.iceGatheringState : '');
+  state.pc.oniceconnectionstatechange = () => logConn('ice_connection', state.pc ? state.pc.iceConnectionState : '');
+  state.pc.onconnectionstatechange = () => logConn('peer_connection', state.pc ? state.pc.connectionState : '');
+
+  state.pc.ondatachannel = (ev) => {
+    state.dc = ev.channel;
+    state.connection.dcState = 'opening';
+    state.dc.onopen = () => {
+      state.connectionReady = true;
+      state.connection.dcState = 'open';
+      state.connection.peerState = 'connected';
+      setConnText();
+      logNet('[open] DataChannel открыт');
+      logConn('dc_open');
+      state.connection.helloSent = true;
+      sendMessage({type:'hello'});
+    };
+    state.dc.onclose = () => {
+      state.connectionReady = false;
+      state.awaitingState = false;
+      state.answerSent = false;
+      state.connection.dcState = 'closed';
+      state.connection.peerState = 'idle';
+      clearHelloTimer();
+      setConnText();
+      logNet('[close] DataChannel закрыт');
+      logConn('dc_closed');
+    };
+    state.dc.onmessage = (msgEv) => onMessage(JSON.parse(msgEv.data));
+  };
+}
+function sendMessage(obj){
+  if (!state.dc || state.dc.readyState !== 'open'){ logNet('[send] канал не открыт'); return false; }
+  state.dc.send(JSON.stringify(obj)); logNet('[send] ' + obj.type); return true;
+}
 async function startSignalClient(){
+  if (state.signalConnecting || state.connectionReady){
+    logNet('[signal] client request ignored');
+    return;
+  }
   const url = $('signalUrl').value.trim();
   const room = $('signalRoom').value.trim();
   if (!url || !room){
@@ -738,28 +890,62 @@ async function startSignalClient(){
     return;
   }
   closeSignalSocket();
+  closePeer();
+  const attemptId = beginConnectAttempt('direct');
+  state.signalConnecting = true;
+  state.connection.wsState = 'connecting';
   state.signaling.url = url;
   state.signaling.room = room;
+  syncSignalStatus();
+  logConn('attempt_started', `room=${room}`);
   const ws = new WebSocket(url);
   state.signaling.ws = ws;
   ws.onopen = () => {
+    if (attemptId !== state.connection.attemptId) return;
+    state.signalConnecting = false;
     state.signaling.connected = true;
+    state.connection.wsState = 'open';
     syncSignalStatus();
     logNet('[signal] connected as client');
+    logConn('ws_open');
     ws.send(JSON.stringify({type:'join', role:'client', room}));
   };
   ws.onmessage = async (ev) => {
     try{
       const msg = JSON.parse(ev.data);
+      if (attemptId !== state.connection.attemptId){
+        logNet('[signal] stale signaling message ignored');
+        return;
+      }
       if (msg.type === 'offer' && msg.sdp){
+        const sdpKey = JSON.stringify(msg.sdp);
+        if (state.connectionReady){
+          logNet('[signal] duplicate offer ignored');
+          return;
+        }
+        if (msg.offerId && state.connection.offerId && msg.offerId !== state.connection.offerId && state.answerSent){
+          logNet('[signal] stale offer ignored');
+          return;
+        }
+        if (state.answerSent && state.lastRemoteOfferSdp === sdpKey){
+          logNet('[signal] duplicate offer ignored');
+          return;
+        }
         buildPeer();
+        state.connection.offerId = msg.offerId || '';
+        state.connection.peerState = 'answering';
         await state.pc.setRemoteDescription(msg.sdp);
         const answer = await state.pc.createAnswer();
         await state.pc.setLocalDescription(answer);
         await waitIceComplete(state.pc);
         $('answerOut').value = JSON.stringify(state.pc.localDescription);
-        ws.send(JSON.stringify({type:'answer', room, sdp: state.pc.localDescription}));
+        ws.send(JSON.stringify({type:'answer', room, sdp: state.pc.localDescription, offerId: state.connection.offerId, attemptId}));
+        state.answerSent = true;
+        state.lastRemoteOfferSdp = sdpKey;
+        state.connection.peerState = 'waiting_hello';
         logNet('[signal] answer sent');
+        logConn('answer_sent', state.connection.offerId ? `offerId=${state.connection.offerId}` : '');
+        startHelloTimer(attemptId);
       } else if (msg.type === 'error'){
         logNet('[signal error] ' + (msg.message || 'server error'));
       }
@@ -768,19 +954,35 @@ async function startSignalClient(){
     }
   };
   ws.onclose = () => {
+    if (attemptId !== state.connection.attemptId) return;
     state.awaitingState = false;
     state.signaling.connected = false;
+    state.signalConnecting = false;
+    state.connection.wsState = 'closed';
     syncSignalStatus();
     logNet('[signal] disconnected');
+    logConn('ws_closed');
   };
   ws.onerror = () => {
+    if (attemptId !== state.connection.attemptId) return;
+    state.connection.wsState = 'error';
     logNet('[signal] websocket error');
+    logConn('ws_error');
   };
 }
 
 function onMessage(msg){
   logNet('[recv] ' + msg.type);
-  if (msg.type === 'hello'){ state.connectionReady = true; setConnText(); return; }
+  if (msg.type === 'hello'){
+    state.connectionReady = true;
+    state.connection.helloReceived = true;
+    state.connection.peerState = 'session_ready';
+    clearHelloTimer();
+    setConnText();
+    syncSignalStatus();
+    logConn('hello_received');
+    return;
+  }
   if (msg.type === 'ping'){ sendMessage({type:'pong'}); return; }
   if (msg.type === 'state_sync'){ state.awaitingState = false; applyRemoteState(msg.payload); sendMessage({type:'ack_state'}); return; }
 }
@@ -815,6 +1017,8 @@ $('applyOfferBtn').addEventListener('click', async () => {
       state.pc.addEventListener('icegatheringstatechange', check);
     });
     $('answerOut').value = JSON.stringify(state.pc.localDescription);
+    state.answerSent = true;
+    state.lastRemoteOfferSdp = JSON.stringify(offer);
     logNet('[answer] создан');
   }catch(e){ logNet('[error] ' + e.message); }
 });
@@ -851,6 +1055,7 @@ const __closeRulesBtn = $('closeRulesBtn'); if (__closeRulesBtn) __closeRulesBtn
 const __rulesBackdrop = $('rulesBackdrop'); if (__rulesBackdrop) __rulesBackdrop.addEventListener('click', hideRulesPanel); if (__closeBtn) __closeBtn.addEventListener('click', hideRoundEnd);
 const __closeHistoryBtn = $('closeHistoryBtn'); if (__closeHistoryBtn) __closeHistoryBtn.addEventListener('click', hideHistoryPanel);
 const __historyBackdrop = $('historyBackdrop'); if (__historyBackdrop) __historyBackdrop.addEventListener('click', hideHistoryPanel);
+$('signalRoom').value = VERSION_NUM;
 applySignalPreset();
 syncSignalStatus();
 loadDefaultButtonBackground();
