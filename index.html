@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>CZ Durak client_47</title>
+<title>CZ Durak client_158</title>
 <style>
   :root{
     --table:#5c341d; --table-dark:#26150c; --panel:rgba(72,42,24,.42); --text:#f6f6f6;
@@ -13,7 +13,7 @@
   }
   *{box-sizing:border-box}
   body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background-image:linear-gradient(rgba(18,10,7,.12), rgba(18,10,7,.12)), var(--page-bg-image);background-size:cover,cover;background-position:center,center;background-repeat:no-repeat,no-repeat;background-attachment:fixed,fixed;min-height:100vh}
-  .wrap{max-width:1280px;margin:0 auto;padding:18px 18px 30px}
+  .wrap{max-width:1280px;margin:0 auto;padding:18px 18px 30px;position:relative}
   h1{margin:8px 0 12px;text-align:center;font-size:30px}
   .topbar{display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:12px}
   .btn-main,.btn-open,.btn-log,.btn-draw,select,textarea,input,button{border:none;border-radius:10px;padding:12px 16px;font-size:18px;box-shadow:var(--shadow)}
@@ -63,7 +63,7 @@
   .cards-row .card-slot:first-child{margin-left:0}
   .center-deck{grid-area:deck;justify-self:end;display:flex;gap:24px;align-items:center}
   .pile-box{grid-area:pile;justify-self:start;min-width:330px;min-height:170px;display:flex;align-items:center;justify-content:flex-start}
-  .status{grid-area:status;justify-self:center;width:min(1020px, 100%);background:linear-gradient(180deg, rgba(244,229,199,.94), rgba(220,200,160,.94));color:#111;padding:14px 20px;border-radius:12px;font-size:20px;box-shadow:var(--shadow)}
+  .status{grid-area:status;justify-self:center;width:min(1020px, 100%);text-align:center;background:linear-gradient(180deg, rgba(244,229,199,.94), rgba(220,200,160,.94));color:#111;padding:14px 20px;border-radius:12px;font-size:20px;box-shadow:var(--shadow);text-align:center}
   .status .sub{display:block;margin-top:8px;font-size:18px;color:#4a3f18;font-weight:700;white-space:pre-line}
   .picker-inline{grid-area:picker;justify-self:center;display:none;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center;width:min(960px, 100%);background:rgba(255,255,255,.08);border-radius:14px;padding:12px;position:relative;z-index:20}
   .picker-inline.show{display:flex;position:relative;z-index:5}
@@ -116,17 +116,49 @@
 
   .layout{position:relative}
   .layout > *{position:relative;z-index:1}
-.table-watermark{position:absolute;left:0;right:0;top:102px;bottom:300px;display:flex;align-items:center;justify-content:center;transform:translateX(26px);pointer-events:none;user-select:none;z-index:0;color:rgba(244,223,198,.56);text-transform:uppercase;font-family:Georgia,'Times New Roman',serif;filter:drop-shadow(0 2px 1px rgba(255,240,220,.18))}
+.table-watermark{position:absolute;left:0;right:0;top:72px;bottom:360px;display:flex;align-items:center;justify-content:center;transform:translateX(26px);pointer-events:none;user-select:none;z-index:0;color:rgba(244,223,198,.56);text-transform:uppercase;font-family:Georgia,'Times New Roman',serif;filter:drop-shadow(0 2px 1px rgba(255,240,220,.18))}
   .table-watermark .wm-101-wrap{display:flex;align-items:center;gap:26px;font-size:clamp(56px,7vw,94px);font-weight:900;letter-spacing:.02em}
-  .table-watermark .wm-101{line-height:1;color:rgba(248,231,208,.72);text-shadow:0 1px 0 rgba(255,248,235,.55),0 -1px 0 rgba(78,47,28,.72),0 2px 0 rgba(118,82,58,.28),0 8px 18px rgba(44,22,11,.42)}
+  .table-watermark .wm-101{line-height:1;color:rgba(248,231,208,.38);text-shadow:0 1px 0 rgba(255,248,235,.55),0 -1px 0 rgba(78,47,28,.72),0 2px 0 rgba(118,82,58,.28),0 8px 18px rgba(44,22,11,.42)}
   .table-watermark .wm-line{width:110px;height:3px;background:linear-gradient(90deg, rgba(244,223,198,.0), rgba(244,223,198,.72), rgba(244,223,198,.0));box-shadow:0 1px 0 rgba(255,246,230,.18),0 3px 8px rgba(26,12,7,.25);border-radius:999px}
-  .table-watermark .wm-bridge{font-size:clamp(68px,8.7vw,116px);font-weight:900;letter-spacing:.018em;line-height:.92;color:rgba(248,231,208,.70);text-shadow:0 1px 0 rgba(255,248,235,.56),0 -1px 0 rgba(78,47,28,.74),0 2px 0 rgba(118,82,58,.28),0 9px 20px rgba(44,22,11,.44)}
+  .table-watermark .wm-bridge{font-size:clamp(68px,8.7vw,116px);font-weight:900;letter-spacing:.018em;line-height:.92;color:rgba(248,231,208,.38);text-shadow:0 1px 0 rgba(255,248,235,.56),0 -1px 0 rgba(78,47,28,.74),0 2px 0 rgba(118,82,58,.28),0 9px 20px rgba(44,22,11,.44)}
+
+
+  .credit-signature{position:absolute;right:20px;top:14px;color:rgba(255,248,235,.94);font-size:18px;font-weight:700;letter-spacing:.02em;text-shadow:0 1px 0 rgba(0,0,0,.55),0 0 8px rgba(0,0,0,.28);z-index:5;pointer-events:none}
+
+  .chance-panel{position:absolute;left:50%;top:39%;transform:translate(-50%,-50%);z-index:4;display:none;min-width:470px;max-width:min(980px,94vw);padding:9px 13px;border-radius:16px;background:rgba(28,17,11,.46);border:1px solid rgba(255,238,200,.22);box-shadow:0 10px 24px rgba(0,0,0,.25);backdrop-filter:blur(1.2px);pointer-events:none;text-align:left}
+  .chance-panel.show{display:block}
+  .chance-title{font-size:18px;font-weight:900;color:#fff4d8;text-shadow:0 1px 2px rgba(0,0,0,.7);margin:0 0 6px;text-align:center}
+  .chance-any{margin-left:14px;color:#f8e28c;font-weight:900}
+  .chance-outs{margin-left:8px;color:#e8d6a6;font-size:14px;font-weight:800;opacity:.95}
+  .chance-cards{display:flex;gap:7px;justify-content:flex-start;align-items:flex-end;flex-wrap:wrap}
+  .chance-item{width:44px;text-align:center}
+  .chance-prob{display:none}
+  .chance-mini-card{width:42px;height:55px;border-radius:6px;background:#fff;color:#111;border:1px solid rgba(0,0,0,.34);box-shadow:0 3px 8px rgba(0,0,0,.30);position:relative;margin:0;font-weight:900;font-family:Arial,Helvetica,sans-serif;flex:0 0 auto}
+  .chance-mini-card .ct{position:absolute;left:50%;top:3px;transform:translateX(-50%);font-size:18px;line-height:.95;letter-spacing:-1.4px;white-space:nowrap;text-align:center}
+  .chance-mini-card .cp{position:absolute;left:50%;bottom:3px;transform:translateX(-50%);min-width:25px;padding:1px 5px;border-radius:999px;background:rgba(50,34,15,.88);color:#ffe789;font-size:16px;font-weight:900;line-height:1.05;text-align:center;text-shadow:0 1px 1px rgba(0,0,0,.65)}
+  .chance-mini-card.red{color:#d81f1f}
+  .chance-mini-card.black{color:#111}
+  .chance-summary-card{background:linear-gradient(180deg,#fffaf0,#efd8a6);border-color:rgba(255,229,127,.88);box-shadow:0 0 0 2px rgba(255,226,94,.16),0 3px 8px rgba(0,0,0,.30)}
+  .chance-summary-card .ct{font-size:25px;letter-spacing:-1px}
+  .chance-summary-card .cp{font-size:18px;bottom:4px}
+  .chance-empty{font-size:15px;color:#f3ead7;font-weight:700;opacity:.88;text-align:center}
+
+  .chance-panel{top:39%;min-width:470px;max-width:min(1040px,94vw);padding:9px 13px}
+  .chance-groups{display:flex;flex-direction:column;gap:6px;align-items:stretch}
+  .chance-group{display:flex;gap:7px;align-items:center;justify-content:flex-start;flex-wrap:nowrap}
+  .chance-group-head{display:none}
+  .chance-group-cards{display:flex;gap:5px;align-items:center;justify-content:flex-start;flex-wrap:wrap;max-width:900px}
+  .chance-mini-card{width:38px;height:50px}
+  .chance-mini-card .ct{font-size:18px;top:3px}
+  .chance-mini-card .cp{display:block}
+  @media (max-width:760px){.chance-panel{top:38%;min-width:320px}.chance-group{flex-wrap:wrap}.chance-group-cards{justify-content:flex-start}.chance-mini-card{width:36px;height:48px}.chance-summary-card .ct{font-size:23px}}
 
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>CZ Durak client_47</h1>
+  <div class="credit-signature">by LAMM_-*-_VURDALAK</div>
+  <h1>CZ Durak client_158</h1>
 
   <div class="topbar">
     <button class="btn-log" id="logToggleBtn" type="button" style="display:none">ЛОГ OFF</button>
@@ -134,6 +166,7 @@
     <button class="btn-log" id="debugToggleBtn" type="button" style="display:none">DEBUG OFF</button>
     <button class="btn-log" id="rulesBtn" type="button">Rules</button>
     <button class="btn-bg" id="bgCycleBtn" type="button">BG</button>
+    <button class="btn-bg" id="chanceBtn" type="button">Chance</button>
     <span id="connStateText">No connection</span>
   </div>
 
@@ -158,6 +191,7 @@
 
   <div class="layout">
     <div id="variantWatermark" class="table-watermark" aria-hidden="true">101</div>
+    <div id="chancePanel" class="chance-panel" aria-live="polite"></div>
     <div class="enemy-box">
       <div class="name-row"><div>Соперник</div><div id="enemyCount"></div></div>
       <div class="cards-row enemy" id="enemyRow"></div>
@@ -188,10 +222,7 @@
       <div class="name-row"><div>Вы</div><div id="playerCount"></div></div>
       <div class="cards-row player" id="playerRow"></div>
       <div class="small-note"><button class="btn-draw" id="drawBtn">Взять из колоды</button></div>
-      <div class="legend">
-        <div>Client отправляет действия host.</div>
-        <div>После ответа host state обновляется автоматически.</div>
-      </div>
+
     </div>
   </div>
 
@@ -205,7 +236,7 @@
           <option value="custom">Custom</option>
         </select>
         <input id="signalUrl" type="text" value="wss://bubbly-tranquility-production.up.railway.app" placeholder="wss://...">
-        <input id="signalRoom" type="text" value="47" placeholder="Комната">
+        <input id="signalRoom" type="text" value="158" placeholder="Комната">
         <button class="btn-log" id="signalClientBtn" type="button">Сервер: client</button>
       </div>
 
@@ -257,11 +288,11 @@
 <div class="history-box" id="historyPanel">
   <h4>История счёта</h4>
   <div class="lines" id="historyLines"></div>
-  <div class="actions"><button id="closeHistoryBtn" type="button" >Закрыть</button></div>
+  <div class="actions"><button id="closeHistoryBtn" type="button">Закрыть</button></div>
 </div>
 
 <script>
-const APP_VERSION = 'CZ Durak client_47';
+const APP_VERSION = 'CZ Durak client_158';
 const suits = [
   { key: 'clubs', symbol: '♣', color: 'black', label: 'Трефы' },
   { key: 'diamonds', symbol: '♦', color: 'red', label: 'Бубны' },
@@ -280,69 +311,29 @@ const state = {
   signalConnecting: false,
   answerSent: false,
   lastRemoteOfferSdp: '',
-  connection: {
-    attemptId: 0,
-    offerId: '',
-    stage: 'idle',
-    wsState: 'closed',
-    peerState: 'idle',
-    dcState: 'closed',
-    helloSent: false,
-    helloReceived: false,
-    startedAt: 0,
-    helloDeadlineAt: 0,
-    lastError: '',
-    helloTimer: null
-  },
   classicLog: '',
   lastRejectInfo: '',
   bgFiles: [],
   bgIndex: -1,
   bgName: '',
   pendingBgName: '',
+  bgLoadStarted: false,
+  chanceMode: 'off',
+  chanceMasterEnabled: true,
+  chanceView: null,
+  lastChancePreviewId: '',
+  awaitingState: false,
+  connection: {
+    attemptId: 0, stage: 'idle', wsState: 'closed', peerState: 'idle', dcState: 'closed',
+    offerId: '', helloSent: false, helloReceived: false, startedAt: 0, helloAt: 0,
+    lastError: '', timers: { hello: null, retry: null }, transportPolicy: 'all'
+  },
 };
 const $ = (id) => document.getElementById(id);
 const NL = String.fromCharCode(10);
 const SERVER_PRESETS = { railway: 'wss://bubbly-tranquility-production.up.railway.app', localhost: 'ws://localhost:8787' };
 const ACTION_DELAY_MS = 900;
-const VERSION_NUM = ((APP_VERSION.match(/(\d+)/g) || []).pop()) || '0';
-
-function clearHelloTimer(){
-  if (state.connection && state.connection.helloTimer){
-    clearTimeout(state.connection.helloTimer);
-    state.connection.helloTimer = null;
-  }
-}
-function beginConnectAttempt(stage='direct'){
-  clearHelloTimer();
-  state.connection.attemptId += 1;
-  state.connection.offerId = '';
-  state.connection.stage = stage;
-  state.connection.wsState = 'closed';
-  state.connection.peerState = 'idle';
-  state.connection.dcState = 'closed';
-  state.connection.helloSent = false;
-  state.connection.helloReceived = false;
-  state.connection.startedAt = Date.now();
-  state.connection.helloDeadlineAt = 0;
-  state.connection.lastError = '';
-  return state.connection.attemptId;
-}
-function startHelloTimer(attemptId, ms=12000){
-  clearHelloTimer();
-  state.connection.helloDeadlineAt = Date.now() + ms;
-  state.connection.helloTimer = setTimeout(() => {
-    if (state.connection.attemptId !== attemptId) return;
-    if (state.connection.helloReceived || state.connectionReady) return;
-    state.connection.lastError = 'hello timeout';
-    logNet(`[flow] hello timeout after ${ms} ms`);
-  }, ms);
-}
-function logConn(eventName, details=''){
-  const elapsed = state.connection && state.connection.startedAt ? (Date.now() - state.connection.startedAt) : 0;
-  const suffix = details ? ` | ${details}` : '';
-  logNet(`[conn] ${eventName} | attempt=${state.connection.attemptId} | stage=${state.connection.stage} | ws=${state.connection.wsState} | peer=${state.connection.peerState} | dc=${state.connection.dcState} | t=${elapsed}ms${suffix}`);
-}
+const VERSION_NUM = (APP_VERSION.match(/_(\d+(?:\.\d+)*)$/)?.[1] || (APP_VERSION.match(/(\d+)/g) || []).pop() || '0');
 
 const BG_FILE_RE = /\.(jpe?g|png|webp)$/i;
 const DEFAULT_BUTTON_BG_CANDIDATES = (() => {
@@ -365,12 +356,8 @@ const DEFAULT_TABLE_BG_MANIFESTS = ['Pics/backgrounds.json','Pics/list.json','Pi
 const DEFAULT_TABLE_BG_CANDIDATES = (() => {
   const items = [];
   const exts = ['jpg','jpeg','png','webp'];
-  const prefixes = ['','bg','table','leather','skin','pic'];
-  for (const prefix of prefixes){
-    for (let i = 1; i <= 200; i++){
-      const stem = `${prefix}${i}`;
-      for (const ext of exts) items.push(`Pics/${stem}.${ext}`);
-    }
+  for (let i = 1; i <= 200; i++){
+    for (const ext of exts) items.push(`Pics/bg${i}.${ext}`);
   }
   return items;
 })();
@@ -411,6 +398,8 @@ async function tryLoadManifest(url){
   return null;
 }
 async function loadDefaultTableBackgrounds(){
+  if (state.bgLoadStarted) return;
+  state.bgLoadStarted = true;
   let urls = null;
   for (const manifest of DEFAULT_TABLE_BG_MANIFESTS){
     urls = await tryLoadManifest(manifest);
@@ -538,17 +527,75 @@ function createCardElement(card, opts = {}){
 }
 
 
+
+function nextChanceMode(mode){ return mode === 'off' ? 'visible' : (mode === 'visible' ? 'hidden' : 'off'); }
+function chanceModeLabel(mode){ return mode === 'visible' ? 'Chance V' : (mode === 'hidden' ? 'Chance H' : 'Chance'); }
+function updateChanceButton(){
+  const btn=$('chanceBtn');
+  if (btn){
+    btn.textContent = state.chanceMasterEnabled === false ? 'Chance OFF' : chanceModeLabel(state.chanceMode || 'off');
+    btn.disabled = state.chanceMasterEnabled === false;
+  }
+}
+function toggleChanceClient(){
+  if (state.chanceMasterEnabled === false) return;
+  state.chanceMode = nextChanceMode(state.chanceMode || 'off');
+  updateChanceButton();
+  sendMessage({type:'client_chance_mode', mode: state.chanceMode});
+  renderChancePanel();
+}
+function chancePreviewId(card){ return card && card.rank !== 'Q' ? `${card.rank}|${card.suit}` : ''; }
+function sendClientChancePreview(card){
+  if (state.chanceMasterEnabled === false) return;
+  if ((state.chanceMode || 'off') === 'off') return;
+  if (!state.connectionReady) return;
+  const id = chancePreviewId(card);
+  if (state.lastChancePreviewId === id) return;
+  state.lastChancePreviewId = id;
+  sendMessage({type:'client_chance_preview', card: id ? {rank:card.rank, suit:card.suit} : null});
+}
+function chanceSummaryCard(group){
+  const prob = group.probabilityText || '0';
+  if (group.key === 'suit'){
+    const suit = suits.find(s => s.symbol === group.symbol) || suits.find(s => s.key === group.suit);
+    const color = suit && suit.color === 'red' ? 'red' : 'black';
+    return `<div class="chance-mini-card chance-summary-card ${color}"><div class="ct">${group.symbol || ''}</div><div class="cp">${prob}</div></div>`;
+  }
+  const label = group.key === 'queen' ? 'Q' : (group.label || '');
+  return `<div class="chance-mini-card chance-summary-card black"><div class="ct">${label}</div><div class="cp">${prob}</div></div>`;
+}
+function renderChanceCard(item){
+  const suit = suitInfo(item.suit);
+  const color = suit && suit.color === 'red' ? 'red' : 'black';
+  const prob = item.probabilityText || '';
+  return `<div class="chance-mini-card ${color}"><div class="ct">${item.rank}${suit ? suit.symbol : ''}</div>${prob ? `<div class="cp">${prob}</div>` : ''}</div>`;
+}
+function renderChanceGroup(group){
+  const cardsHtml = (group.cards || []).map(renderChanceCard).join('');
+  return `<div class="chance-group"><div class="chance-group-cards">${chanceSummaryCard(group)}${cardsHtml}</div></div>`;
+}
+function renderChancePanel(){
+  const panel = $('chancePanel'); if (!panel) return;
+  const view = state.chanceView || {enabled:false, mode:state.chanceMode || 'off', any:0, outs:0, denom:0, groups:[], cards:[]};
+  const mode = state.chanceMode || view.mode || 'off';
+  if (state.chanceMasterEnabled === false || !view.enabled || mode === 'off'){ panel.classList.remove('show'); panel.innerHTML=''; return; }
+  const title = `${chanceModeLabel(mode)} <span class="chance-any">Any ${view.any || 0}</span><span class="chance-outs">${view.outs || 0}/${view.denom || 0}</span>`;
+  const groupsHtml = (view.groups && view.groups.length) ? view.groups.map(renderChanceGroup).join('') : ((view.cards && view.cards.length) ? '<div class="chance-group"><div class="chance-group-cards">' + view.cards.map(renderChanceCard).join('') + '</div></div>' : '<div class="chance-empty">нет карты с шансом больше 0</div>');
+  panel.innerHTML = `<div class="chance-title">${title}</div><div class="chance-groups">${groupsHtml}</div>`;
+  panel.classList.add('show');
+}
+
 function updateBgButton(){
   const btn = $('bgCycleBtn');
   if (!btn) return;
   btn.textContent = state.bgFiles.length ? `BG ${state.bgIndex + 1}/${state.bgFiles.length}` : 'BG';
 }
-function cycleBackgrounds(){
+function cycleBackgrounds(direction = 1){
   if (!state.bgFiles || !state.bgFiles.length){
     updateBgButton();
     return;
   }
-  applyBackgroundIndex(state.bgIndex + 1, false);
+  applyBackgroundIndex(state.bgIndex + direction, false);
 }
 function setBodyBackground(url){
   document.documentElement.style.setProperty('--page-bg-image', url ? `url("${url}")` : "radial-gradient(circle at 30% 26%, #eadbc0 0%, #d3b186 34%, #b17d56 68%, #8e6140 100%)");
@@ -610,8 +657,13 @@ function renderPlayer(){
       playable: state.turn === 'player' && !state.pendingSuitChoice && playable.includes(card),
       clickHandler: () => clientPlay(index)
     });
+    const canPreview = state.turn === 'player' && !state.pendingSuitChoice && playable.includes(card);
+    if (canPreview){
+      el.addEventListener('mouseenter', () => sendClientChancePreview(card));
+      el.addEventListener('mouseleave', () => sendClientChancePreview(null));
+    }
     el.draggable = true;
-    el.addEventListener('dragstart', () => { state.dragIndex = index; });
+    el.addEventListener('dragstart', () => { sendClientChancePreview(null); state.dragIndex = index; });
     slot.addEventListener('dragover', (e) => e.preventDefault());
     slot.addEventListener('drop', (e) => {
       e.preventDefault();
@@ -669,7 +721,7 @@ function updateVariantWatermark(){
   else wm.innerHTML = '<div class="wm-101-wrap"><span class="wm-line"></span><span class="wm-101">101</span><span class="wm-line"></span></div>';
 }
 function renderControls(){ $('drawBtn').disabled = !(state.gameStarted && !state.roundEnded && !state.matchOver && state.turn === 'player' && !state.pendingSuitChoice && shouldEnableDraw(state.playerHand)); }
-function render(){ updateVariantWatermark(); renderEnemy(); renderPlayer(); renderDeck(); renderPile(); renderControls(); setConnText(); }
+function render(){ updateVariantWatermark(); renderEnemy(); renderPlayer(); renderDeck(); renderPile(); renderControls(); setConnText(); updateChanceButton(); renderChancePanel(); }
 
 
 function applySignalPreset(){
@@ -714,6 +766,27 @@ async function pasteFromClipboard(targetId){
   }
 }
 
+
+function clientActionTextFromHost(text){
+  text = String(text || '');
+  const rules = [
+    [/^вы походили /i, 'соперник походил '],
+    [/^host походил /i, 'соперник походил '],
+    [/^соперник походил /i, 'вы походили '],
+    [/^вы добрали /i, 'соперник добрал '],
+    [/^соперник добрал /i, 'вы добрали '],
+    [/^host заказал масть /i, 'соперник заказал масть '],
+    [/^client заказал масть /i, 'вы заказали масть '],
+    [/^client переставил карты/i, 'вы переставили карты'],
+    [/^завершён /i, 'завершён '],
+    [/^старт нового сета/i, 'старт нового сета']
+  ];
+  for (const [rx, repl] of rules){
+    if (rx.test(text)) return text.replace(rx, repl);
+  }
+  return text.replace(/\bhost\b/ig, 'соперник').replace(/\bclient\b/ig, 'вы');
+}
+
 function applyRemoteState(payload){
   state.rules = payload.rules || {};
   state.deck = payload.deck || [];
@@ -733,27 +806,174 @@ function applyRemoteState(payload){
   state.matchOver = !!payload.matchOver;
   state.roundEndInfo = payload.roundEndInfo || null;
   state.classicLog = payload.classicLog || state.classicLog;
+  state.connectionLog = payload.connectionLog || state.connectionLog || '';
   state.scoreHistory = payload.scoreHistory || state.scoreHistory;
   state.rulesText = payload.rulesText || state.rulesText || RULES_TEXT;
   state.rules.tableBgName = (payload.rules && payload.rules.tableBgName) || state.rules.tableBgName || '';
+  state.chanceMasterEnabled = payload.chanceMasterEnabled !== false;
+  if (payload.chanceModeClient) state.chanceMode = payload.chanceModeClient;
+  if (state.chanceMasterEnabled === false) state.chanceMode = 'off';
+  state.chanceView = payload.chanceClientView || {enabled:false, mode:state.chanceMode || 'off', any:0, outs:0, denom:0, cards:[]};
   state.pendingBgName = state.rules.tableBgName || state.pendingBgName;
   applyPendingBackground();
-  let mainText = (!state.gameStarted || state.roundEnded) ? 'Партия завершена.' : (payload.lastAction ? `Последнее действие: ${payload.lastAction}` : 'Получено новое состояние.');
-  let subText = (!state.gameStarted || state.roundEnded) ? 'Нажмите NEXT SET или NEW GAME на стороне host.' : (state.turn === 'player' ? 'Сейчас ваш ход.' : 'Сейчас ход host.');
+  const actionText = clientActionTextFromHost(payload.lastAction || '');
+  let mainText = (!state.gameStarted || state.roundEnded) ? 'Партия завершена.' : (actionText ? actionText + '.' : 'Получено новое состояние.');
+  let subText = (!state.gameStarted || state.roundEnded) ? 'Нажмите NEXT SET или NEW GAME на стороне соперника.' : (state.turn === 'player' ? 'Сейчас ваш ход.' : 'Ход соперника.');
   const clientMustChooseSuit = state.pendingSuitChoice && state.pendingSuitChoiceRole === 'enemy';
   if (clientMustChooseSuit){
     mainText = 'Выберите масть.';
     subText = 'После дамы нужно заказать масть.';
   } else if (state.pendingSuitChoice){
-    subText = 'Host выбирает масть...';
+    subText = 'Соперник выбирает масть...';
   }
   setStatus(mainText, subText);
   $('pickerInline').classList.toggle('show', clientMustChooseSuit);
   if (state.roundEndInfo) showRoundEnd(state.roundEndInfo.title, state.roundEndInfo.lines); else hideRoundEnd();
   render();
 }
-function buildPeer(){
+function clearTimer(ref){
+  if (ref) clearTimeout(ref);
+  return null;
+}
+function cancelClientConnectTimers(){
+  state.connection.timers.hello = clearTimer(state.connection.timers.hello);
+  state.connection.timers.retry = clearTimer(state.connection.timers.retry);
+}
+function resetClientConnectionFlow(){
+  cancelClientConnectTimers();
+  state.connection.stage = 'idle';
+  state.connection.peerState = 'idle';
+  state.connection.dcState = 'closed';
+  state.connection.offerId = '';
+  state.connection.helloSent = false;
+  state.connection.helloReceived = false;
+  state.connection.startedAt = 0;
+  state.connection.helloAt = 0;
+  state.connection.lastError = '';
+  state.connection.transportPolicy = 'all';
+}
+function clientElapsed(){
+  return state.connection.startedAt ? (Date.now() - state.connection.startedAt) : 0;
+}
+function clientConnSnapshot(){
+  const pc = state.pc;
+  return `attempt=${state.connection.attemptId} stage=${state.connection.stage} ws=${state.connection.wsState} peer=${state.connection.peerState} dc=${state.connection.dcState} sig=${pc ? pc.signalingState : '-'} ice=${pc ? pc.iceConnectionState : '-'} pc=${pc ? pc.connectionState : '-'} gather=${pc ? pc.iceGatheringState : '-'} policy=${state.connection.transportPolicy}`;
+}
+function logConn(event, details=''){
+  const extra = details ? ` | ${details}` : '';
+  logNet(`[conn] ${event} | ${clientConnSnapshot()} | t=${clientElapsed()}ms${extra}`);
+}
+async function logPeerStats(tag){
+  if (!state.pc || typeof state.pc.getStats !== 'function') return;
+  try{
+    const stats = await state.pc.getStats();
+    let selected = null;
+    let local = null;
+    let remote = null;
+    stats.forEach(report => {
+      if (!selected && report.type === 'transport' && report.selectedCandidatePairId) selected = stats.get(report.selectedCandidatePairId);
+    });
+    if (!selected){
+      stats.forEach(report => {
+        if (!selected && report.type === 'candidate-pair' && (report.selected || report.nominated || report.state === 'succeeded')) selected = report;
+      });
+    }
+    if (selected){
+      local = stats.get(selected.localCandidateId);
+      remote = stats.get(selected.remoteCandidateId);
+      logNet(`[stats] ${tag} pair=${selected.state || '-'} local=${local ? (local.candidateType + '/' + (local.protocol || '-')) : '-'} remote=${remote ? (remote.candidateType + '/' + (remote.protocol || '-')) : '-'} rtt=${selected.currentRoundTripTime ?? '-'}`);
+    } else {
+      logNet(`[stats] ${tag} pair=none`);
+    }
+  }catch(e){
+    logNet('[stats error] ' + e.message);
+  }
+}
+function updateClientConnText(){
+  if (state.connectionReady) $('connStateText').textContent = 'Connected';
+  else $('connStateText').textContent = `No connection (${state.connection.stage})`;
+}
+function closePeer(reason='manual'){
+  cancelClientConnectTimers();
+  try { if (state.dc) state.dc.close(); } catch(e){}
+  try { if (state.pc) state.pc.close(); } catch(e){}
+  state.dc = null;
+  state.pc = null;
+  state.connectionReady = false;
+  state.awaitingState = false;
+  state.answerSent = false;
+  state.lastRemoteOfferSdp = '';
+  resetClientConnectionFlow();
+  updateClientConnText();
+  if (reason) logNet('[peer] closed: ' + reason);
+}
+function scheduleClientHelloTimeout(attemptId){
+  state.connection.timers.hello = clearTimer(state.connection.timers.hello);
+  state.connection.timers.hello = setTimeout(() => {
+    if (attemptId !== state.connection.attemptId) return;
+    if (state.connectionReady || state.connection.helloReceived) return;
+    logConn('hello timeout');
+  }, 45000);
+}
+function updateClientAttemptFromOffer(msg){
+  const attemptId = Number(msg.attemptId || 0) || (state.connection.attemptId + 1);
+  state.connection.attemptId = attemptId;
+  state.connection.offerId = String(msg.offerId || '');
+  state.connection.stage = String(msg.stage || 'remote-offer');
+  state.connection.startedAt = Date.now();
+  state.connection.peerState = 'offer-received';
+  state.connection.dcState = 'closed';
+  state.connection.helloSent = false;
+  state.connection.helloReceived = false;
+  state.connection.transportPolicy = String(msg.transportPolicy || 'all');
+}
+function bindClientPeerEvents(){
+  if (!state.pc) return;
+  state.pc.onsignalingstatechange = () => { state.connection.peerState = state.pc.signalingState; logConn('signaling'); };
+  state.pc.onicegatheringstatechange = () => { logConn('gathering'); updateClientConnText(); };
+  state.pc.oniceconnectionstatechange = () => {
+    logConn('ice');
+    updateClientConnText();
+    if (['connected','completed'].includes(state.pc.iceConnectionState)) logPeerStats('client-ice');
+  };
+  state.pc.onconnectionstatechange = () => {
+    logConn('pc');
+    updateClientConnText();
+    if (state.pc.connectionState === 'connected') logPeerStats('client-pc');
+  };
+  state.pc.ondatachannel = (ev) => {
+    state.dc = ev.channel;
+    state.connection.dcState = state.dc.readyState || 'connecting';
+    logConn('dc created', state.dc.label || '');
+    state.dc.onopen = () => {
+      state.connectionReady = true;
+      state.connection.dcState = 'open';
+      state.connection.helloSent = true;
+      state.connection.peerState = 'connected';
+      updateClientConnText();
+      logConn('dc open');
+      logNet('[HELLO] HELLO=SENT=HELLO');
+      sendMessage({type:'hello', attemptId: state.connection.attemptId, offerId: state.connection.offerId});
+      scheduleClientHelloTimeout(state.connection.attemptId);
+      logPeerStats('client-open');
+    };
+    state.dc.onclose = () => {
+      state.connectionReady = false;
+      state.awaitingState = false;
+      state.connection.dcState = 'closed';
+      updateClientConnText();
+      logConn('dc close');
+    };
+    state.dc.onmessage = (msgEv) => onMessage(JSON.parse(msgEv.data));
+  };
+}
+function buildPeer(transportPolicy='all'){
+  closePeer('rebuild');
+  state.connection.stage = state.connection.stage === 'idle' ? 'offer-processing' : state.connection.stage;
+  state.connection.peerState = 'building';
+  state.connection.transportPolicy = transportPolicy;
   state.pc = new RTCPeerConnection({
+    iceTransportPolicy: transportPolicy,
     iceServers: [
       { urls: 'stun:stun.l.google.com:19302' },
       {
@@ -768,25 +988,22 @@ function buildPeer(){
       }
     ]
   });
-
-  state.pc.ondatachannel = (ev) => {
-    state.dc = ev.channel;
-    state.dc.onopen = () => { state.connectionReady = true; setConnText(); logNet('[open] DataChannel открыт'); sendMessage({type:'hello'}); };
-    state.dc.onclose = () => { state.connectionReady = false; state.awaitingState = false; setConnText(); logNet('[close] DataChannel закрыт'); };
-    state.dc.onmessage = (msgEv) => onMessage(JSON.parse(msgEv.data));
-  };
+  bindClientPeerEvents();
+  updateClientConnText();
+  logConn('peer built');
 }
 function sendMessage(obj){
   if (!state.dc || state.dc.readyState !== 'open'){ logNet('[send] канал не открыт'); return false; }
-  state.dc.send(JSON.stringify(obj)); logNet('[send] ' + obj.type); return true;
+  state.dc.send(JSON.stringify(obj));
+  logNet('[send] ' + obj.type + ' | ' + clientConnSnapshot());
+  return true;
 }
-
 
 function syncSignalStatus(){
   const btn = $('signalClientBtn');
   if (!btn) return;
-  btn.textContent = state.signaling.connected ? 'Сервер: client ✓' : 'Сервер: client';
-  btn.disabled = !!state.signalConnecting || !!state.answerSent;
+  btn.textContent = state.signaling.connected ? 'Сервер: client ✓' : (state.connectionReady ? 'Сервер: client •' : 'Сервер: client');
+  btn.disabled = !!state.signalConnecting;
 }
 function closeSignalSocket(){
   try { if (state.signaling.ws) state.signaling.ws.close(); } catch(e){}
@@ -796,91 +1013,39 @@ function closeSignalSocket(){
   state.connection.wsState = 'closed';
   syncSignalStatus();
 }
-function closePeer(){
-  clearHelloTimer();
-  try {
-    if (state.dc){
-      state.dc.close();
-      state.dc = null;
-    }
-  } catch(e){}
-  try {
-    if (state.pc){
-      state.pc.close();
-      state.pc = null;
-    }
-  } catch(e){}
-  state.connectionReady = false;
-  state.awaitingState = false;
-  state.answerSent = false;
-  state.lastRemoteOfferSdp = '';
-  state.connection.offerId = '';
-  state.connection.peerState = 'idle';
-  state.connection.dcState = 'closed';
-  state.connection.helloSent = false;
-  state.connection.helloReceived = false;
-  setConnText();
+function hasLocalCandidates(pc){
+  const sdp = (pc && pc.localDescription && pc.localDescription.sdp) || '';
+  return sdp.includes('a=candidate:');
 }
-function waitIceComplete(pc){
+function waitIceReady(pc, timeoutMs=1200){
   return new Promise(resolve => {
-    if (pc.iceGatheringState === 'complete') return resolve();
-    const check = () => {
-      if (pc.iceGatheringState === 'complete'){
-        pc.removeEventListener('icegatheringstatechange', check);
-        resolve();
-      }
+    if (!pc) return resolve('no-pc');
+    if (pc.iceGatheringState === 'complete') return resolve('complete');
+    if (hasLocalCandidates(pc)) return resolve('candidate');
+    let settled = false;
+    let timer = null;
+    const finish = (reason) => {
+      if (settled) return;
+      settled = true;
+      if (timer) clearTimeout(timer);
+      pc.removeEventListener('icegatheringstatechange', check);
+      resolve(reason);
     };
+    const check = () => {
+      if (pc.iceGatheringState === 'complete') return finish('complete');
+      if (hasLocalCandidates(pc)) return finish('candidate');
+    };
+    timer = setTimeout(() => finish(hasLocalCandidates(pc) ? 'candidate-timeout' : 'timeout'), timeoutMs);
     pc.addEventListener('icegatheringstatechange', check);
   });
 }
-function buildPeer(){
-  closePeer();
-
-  state.connection.peerState = 'building';
-  state.connection.dcState = 'closed';
-  state.pc = new RTCPeerConnection({
-    iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
-  });
-
-  state.pc.onsignalingstatechange = () => logConn('signaling_state', state.pc ? state.pc.signalingState : '');
-  state.pc.onicegatheringstatechange = () => logConn('ice_gathering', state.pc ? state.pc.iceGatheringState : '');
-  state.pc.oniceconnectionstatechange = () => logConn('ice_connection', state.pc ? state.pc.iceConnectionState : '');
-  state.pc.onconnectionstatechange = () => logConn('peer_connection', state.pc ? state.pc.connectionState : '');
-
-  state.pc.ondatachannel = (ev) => {
-    state.dc = ev.channel;
-    state.connection.dcState = 'opening';
-    state.dc.onopen = () => {
-      state.connectionReady = true;
-      state.connection.dcState = 'open';
-      state.connection.peerState = 'connected';
-      setConnText();
-      logNet('[open] DataChannel открыт');
-      logConn('dc_open');
-      state.connection.helloSent = true;
-      sendMessage({type:'hello'});
-    };
-    state.dc.onclose = () => {
-      state.connectionReady = false;
-      state.awaitingState = false;
-      state.answerSent = false;
-      state.connection.dcState = 'closed';
-      state.connection.peerState = 'idle';
-      clearHelloTimer();
-      setConnText();
-      logNet('[close] DataChannel закрыт');
-      logConn('dc_closed');
-    };
-    state.dc.onmessage = (msgEv) => onMessage(JSON.parse(msgEv.data));
-  };
-}
-function sendMessage(obj){
-  if (!state.dc || state.dc.readyState !== 'open'){ logNet('[send] канал не открыт'); return false; }
-  state.dc.send(JSON.stringify(obj)); logNet('[send] ' + obj.type); return true;
-}
 async function startSignalClient(){
-  if (state.signalConnecting || state.connectionReady){
-    logNet('[signal] client request ignored');
+  if (state.signalConnecting){
+    logNet('[signal] client request ignored: connecting');
+    return;
+  }
+  if (state.connectionReady){
+    logNet('[signal] client request ignored: already connected');
     return;
   }
   const url = $('signalUrl').value.trim();
@@ -890,101 +1055,97 @@ async function startSignalClient(){
     return;
   }
   closeSignalSocket();
-  closePeer();
-  const attemptId = beginConnectAttempt('direct');
+  closePeer('restart client signal');
   state.signalConnecting = true;
-  state.connection.wsState = 'connecting';
   state.signaling.url = url;
   state.signaling.room = room;
+  state.connection.wsState = 'connecting';
   syncSignalStatus();
-  logConn('attempt_started', `room=${room}`);
+  logConn('ws connecting', `url=${url} room=${room}`);
   const ws = new WebSocket(url);
   state.signaling.ws = ws;
   ws.onopen = () => {
-    if (attemptId !== state.connection.attemptId) return;
     state.signalConnecting = false;
     state.signaling.connected = true;
     state.connection.wsState = 'open';
     syncSignalStatus();
-    logNet('[signal] connected as client');
-    logConn('ws_open');
+    logConn('ws open', 'role=client');
     ws.send(JSON.stringify({type:'join', role:'client', room}));
+    logNet('[signal] join sent');
   };
   ws.onmessage = async (ev) => {
     try{
       const msg = JSON.parse(ev.data);
-      if (attemptId !== state.connection.attemptId){
-        logNet('[signal] stale signaling message ignored');
-        return;
-      }
       if (msg.type === 'offer' && msg.sdp){
         const sdpKey = JSON.stringify(msg.sdp);
         if (state.connectionReady){
-          logNet('[signal] duplicate offer ignored');
-          return;
-        }
-        if (msg.offerId && state.connection.offerId && msg.offerId !== state.connection.offerId && state.answerSent){
-          logNet('[signal] stale offer ignored');
+          logNet('[signal] offer ignored: already connected');
           return;
         }
         if (state.answerSent && state.lastRemoteOfferSdp === sdpKey){
           logNet('[signal] duplicate offer ignored');
           return;
         }
-        buildPeer();
-        state.connection.offerId = msg.offerId || '';
-        state.connection.peerState = 'answering';
+        updateClientAttemptFromOffer(msg);
+        buildPeer(msg.transportPolicy || 'all');
         await state.pc.setRemoteDescription(msg.sdp);
+        state.connection.peerState = 'remote-description-set';
+        logConn('offer applied', `offerId=${state.connection.offerId}`);
         const answer = await state.pc.createAnswer();
         await state.pc.setLocalDescription(answer);
-        await waitIceComplete(state.pc);
+        const waitReason = await waitIceReady(state.pc, state.connection.transportPolicy === 'relay' ? 3500 : 1200);
+        logConn('answer ready', `reason=${waitReason} offerId=${state.connection.offerId}`);
         $('answerOut').value = JSON.stringify(state.pc.localDescription);
-        ws.send(JSON.stringify({type:'answer', room, sdp: state.pc.localDescription, offerId: state.connection.offerId, attemptId}));
+        ws.send(JSON.stringify({type:'answer', room, sdp: state.pc.localDescription, offerId: state.connection.offerId, attemptId: state.connection.attemptId}));
         state.answerSent = true;
         state.lastRemoteOfferSdp = sdpKey;
-        state.connection.peerState = 'waiting_hello';
-        logNet('[signal] answer sent');
-        logConn('answer_sent', state.connection.offerId ? `offerId=${state.connection.offerId}` : '');
-        startHelloTimer(attemptId);
+        state.connection.peerState = 'answer-sent';
+        scheduleClientHelloTimeout(state.connection.attemptId);
+        logConn('answer sent', `offerId=${state.connection.offerId}`);
       } else if (msg.type === 'error'){
-        logNet('[signal error] ' + (msg.message || 'server error'));
+        state.connection.lastError = msg.message || 'server error';
+        logNet('[signal error] ' + state.connection.lastError);
       }
     }catch(e){
       logNet('[signal parse error] ' + e.message);
     }
   };
   ws.onclose = () => {
-    if (attemptId !== state.connection.attemptId) return;
     state.awaitingState = false;
     state.signaling.connected = false;
     state.signalConnecting = false;
     state.connection.wsState = 'closed';
     syncSignalStatus();
-    logNet('[signal] disconnected');
-    logConn('ws_closed');
+    logConn('ws close');
   };
   ws.onerror = () => {
-    if (attemptId !== state.connection.attemptId) return;
     state.connection.wsState = 'error';
-    logNet('[signal] websocket error');
-    logConn('ws_error');
+    logConn('ws error');
   };
 }
 
 function onMessage(msg){
-  logNet('[recv] ' + msg.type);
+  logNet('[recv] ' + msg.type + ' | ' + clientConnSnapshot());
   if (msg.type === 'hello'){
     state.connectionReady = true;
     state.connection.helloReceived = true;
-    state.connection.peerState = 'session_ready';
-    clearHelloTimer();
-    setConnText();
+    state.connection.helloAt = Date.now();
+    state.connection.stage = 'connected';
+    state.connection.peerState = 'connected';
+    cancelClientConnectTimers();
+    updateClientConnText();
     syncSignalStatus();
-    logConn('hello_received');
+    logNet('[HELLO] HELLO=RECEIVED=HELLO');
+    logConn('hello received');
     return;
   }
-  if (msg.type === 'ping'){ sendMessage({type:'pong'}); return; }
-  if (msg.type === 'state_sync'){ state.awaitingState = false; applyRemoteState(msg.payload); sendMessage({type:'ack_state'}); return; }
+  if (msg.type === 'ping'){ sendMessage({type:'pong', attemptId: state.connection.attemptId}); return; }
+  if (msg.type === 'chance_preview_sync'){
+    state.chanceView = msg.payload || {enabled:false, mode:'off', any:0, groups:[], cards:[]};
+    renderChancePanel();
+    return;
+  }
+  if (msg.type === 'state_sync'){ state.awaitingState = false; applyRemoteState(msg.payload); sendMessage({type:'ack_state', attemptId: state.connection.attemptId}); return; }
 }
 function clientPlay(index){
   if (!state.gameStarted || state.turn !== 'player' || state.pendingSuitChoice || state.awaitingState) return;
@@ -1006,20 +1167,21 @@ function clientDraw(){
 }
 $('applyOfferBtn').addEventListener('click', async () => {
   try{
-    buildPeer();
+    state.connection.attemptId += 1;
+    state.connection.offerId = `manual-${state.connection.attemptId}`;
+    state.connection.stage = 'manual';
+    state.connection.startedAt = Date.now();
+    buildPeer('all');
     const offer = JSON.parse($('offerIn').value);
     await state.pc.setRemoteDescription(offer);
     const answer = await state.pc.createAnswer();
     await state.pc.setLocalDescription(answer);
-    await new Promise(resolve => {
-      if (state.pc.iceGatheringState === 'complete') return resolve();
-      const check = () => { if (state.pc.iceGatheringState === 'complete'){ state.pc.removeEventListener('icegatheringstatechange', check); resolve(); } };
-      state.pc.addEventListener('icegatheringstatechange', check);
-    });
+    const waitReason = await waitIceReady(state.pc, 1200);
     $('answerOut').value = JSON.stringify(state.pc.localDescription);
     state.answerSent = true;
     state.lastRemoteOfferSdp = JSON.stringify(offer);
-    logNet('[answer] создан');
+    state.connection.peerState = 'answer-sent';
+    logConn('manual answer created', `reason=${waitReason}`);
   }catch(e){ logNet('[error] ' + e.message); }
 });
 $('drawBtn').addEventListener('click', clientDraw);
@@ -1033,7 +1195,9 @@ $('logToggleBtn').addEventListener('click', () => { state.logEnabled = !state.lo
 $('debugToggleBtn').addEventListener('click', () => { state.debugEnabled = !state.debugEnabled; $('debugToggleBtn').textContent = state.debugEnabled ? 'DEBUG ON' : 'DEBUG OFF'; });
 $('historyBtn').addEventListener('click', showHistoryPanel);
 $('rulesBtn').addEventListener('click', showRulesPanel);
-$('bgCycleBtn').addEventListener('click', cycleBackgrounds);
+window.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') cycleBackgrounds(-1); });
+$('bgCycleBtn').addEventListener('click', () => cycleBackgrounds(1));
+$('chanceBtn').addEventListener('click', toggleChanceClient);
 $('signalPreset').addEventListener('change', applySignalPreset);
 $('signalClientBtn').addEventListener('click', startSignalClient);
 $('pickerInline').querySelectorAll('button').forEach(btn => btn.addEventListener('click', () => {
@@ -1061,7 +1225,7 @@ syncSignalStatus();
 loadDefaultButtonBackground();
 loadDefaultTableBackgrounds();
 updateBgButton();
-render(); setConnText();
+render(); updateClientConnText();
 </script>
 </body>
 </html>
